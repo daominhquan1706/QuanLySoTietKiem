@@ -1,0 +1,455 @@
+﻿ @using QLSTK.Models
+@using System.Data.Entity
+@using Microsoft.AspNet.Identity
+@{
+    if (Request.IsAuthenticated == false)
+    {
+        Response.Redirect("~/Account/Login");
+    }
+
+
+
+
+
+
+
+    Entities db = new Entities();
+    string time = DateTime.Now.ToString();
+    bool banlaadmin = false;
+    var username = "khach@gmail.com";
+    var nguoinhan = "admin@gmail.com";  // người được chọn để nhắn tin với người đăng nhập hiện tại
+    if (Request.IsAuthenticated)
+    {
+        username = User.Identity.GetUserName(); // người đang đăng nhập hiện tại
+    }
+    var DBusername = db.AspNetUsers.Single(d => d.Email.Equals(username));
+    var idusername = DBusername.Id;
+    var DBnguoinhan = db.AspNetUsers.Single(d => d.Email.Equals(nguoinhan));
+    var idnguoinhan = DBnguoinhan.Id;
+    var listchatboxes = db.ChatBoxes.ToList();
+    var listuser = db.AspNetUsers.ToList();
+
+
+    var listLoaiTK = db.LoaiTietKiems.ToList();
+    var CountUser = db.AspNetUsers.Count(); // đếm user
+    var CountChatBoxes = db.ChatBoxes.Count(); // đếm tổng số lượng tin nhắn
+    var CountPhieuGuiTien = db.PhieuGuiTiens.Count(); //đếm tổng phiếu gữi tiền
+    var CountPhieuRutTien = db.PhieuRutTiens.Count(); //đếm tổng phiếu rút tiền
+    var luotgiaodich = CountPhieuGuiTien + CountPhieuRutTien; //đếm tổng cộng phiếu gữi tiền và phiếu rút tiền
+    var listUser = db.AspNetUsers.Single(d => d.Id.Equals(idusername)); // tạo danh sách User
+
+
+    List<string> nhungthuconthieu = new List<string>();
+    //thêm những item còn thiếu của khách hàng thành 1 list để có thể liệt kê
+    if (1 == 1)
+    {
+        if (listUser.HoTen == null)
+        {
+            nhungthuconthieu.Add("Họ Tên");
+        }
+        if (listUser.DiaChi == null)
+        {
+            nhungthuconthieu.Add("Địa Chỉ");
+        }
+        if (listUser.CMND == null)
+        {
+            nhungthuconthieu.Add("CMND");
+        }
+    }
+    var fullItem = 3;
+    var DemItemNull = nhungthuconthieu.Count();
+    var phantramnull = 0;
+    if (DemItemNull != 0)
+    {
+        phantramnull = 100 - (DemItemNull * 100 / fullItem);
+    }
+    else
+    {
+        phantramnull = 100;
+    }
+    var listloaitietkiem = db.LoaiTietKiems.ToList();
+    var listloaitrangthai = db.LoaiTrangThais.ToList();
+    var banlaemployee = false;
+
+    List<string> danhsachrole = new List<String>();
+    if (Request.IsAuthenticated)
+    {
+        ApplicationDbContext context = new ApplicationDbContext();
+        ApplicationUser model = context.Users.Find(listuser.Single(s => s.Email.Equals(@User.Identity.GetUserName())).Id);
+        var listrole = new SelectList(context.Roles.ToList().Where(item => model.Roles.FirstOrDefault(r => r.RoleId == item.Id) == null).ToList(), "Id", "Name");
+        if (model.Roles.Count == 0)
+        {
+            banlaadmin = false;
+        }
+        else
+        {
+            foreach (var aaa in model.Roles)
+            {
+                danhsachrole.Add(aaa.RoleId);
+            }
+            banlaadmin = true;
+            if (danhsachrole.Count() == 1)
+            {
+                banlaemployee = true;
+            }
+            if (danhsachrole.Count() == 2)
+            {
+                banlaemployee = false;
+                banlaadmin = true;
+            }
+        }
+    }
+
+}
+
+
+<!-- Header -->
+<header class="w3-container" style="padding-top:22px">
+    <h5><b><i class="fa fa-dashboard"></i> Trang Chủ  </b></h5>
+</header>
+
+
+<!--USER PAGE-->
+@if (Request.IsAuthenticated && banlaadmin == false && banlaemployee == false)
+{
+    <div class="w3-row-padding w3-margin-bottom ">
+
+    </div>
+    <div class="w3-twothird">
+        @if (phantramnull == 100)
+        {
+            <div class="w3-white w3-text-grey w3-card-4">
+                <div class="w3-display-container">
+                    <img src="~/Content/image/banner.jpg" style="width:100%" alt="Avatar">
+                    <div class="w3-display-bottomleft w3-container w3-text-black">
+                        <h2 class="w3-deep-purple w3-padding w3-round-xxlarge"> @DBusername.HoTen </h2>
+                    </div>
+                </div>
+                <div class="w3-container w3-row-padding">
+                    <br />
+                    <div class="w3-quarter">
+                        <p class="w3-large"><b><i class="fa fa-money w3-margin-right w3-text-deep-purple"></i>SỐ DƯ</b></p>
+                        <p class="w3-large"><b><i class="fa fa-road w3-margin-right w3-text-deep-purple"></i>ĐỊA CHỈ</b></p>
+                        <p class="w3-large"><b><i class="fa fa-asterisk w3-margin-right w3-text-deep-purple"></i>LOẠI TIẾT KIỆM</b></p>
+                        <p class="w3-large"><b><i class="fa fa-barcode w3-margin-right w3-text-deep-purple"></i>SỐ CMND</b></p>
+                        <p class="w3-large"><b><i class="fa fa-info-circle w3-margin-right w3-text-deep-purple"></i>TRẠNG THÁI SỔ</b></p>
+                    </div>
+                    <div class="w3-threequarter">
+                        <p class="w3-large">@DBusername.SoDu VND</p>
+                        <p class="w3-large">@DBusername.DiaChi</p>
+                        @if (DBusername.MaLoaiTK != null)
+                        {
+                            <p class="w3-large">@listloaitietkiem.Single(m => m.MaLoaiTK.Equals(DBusername.MaLoaiTK)).TenLoai</p>
+                        }
+                        else
+                        {
+                            <p class="w3-large">Chưa chọn loại tiết kiệm nào </p>
+                        }
+                        <p class="w3-large">@DBusername.CMND</p>
+                        <p class="w3-large">@listloaitrangthai.Single(s => s.MaTrangThai.Equals(DBusername.MaTrangThai)).TenTrangThai</p>
+                    </div>
+                    <br>
+                </div>
+            </div><br>
+
+        }
+        else
+        {
+            <div class="w3-purple card-header">Khách hàng</div>
+            <div class="w3-container w3-card w3-white w3-margin-bottom w3-padding-16">
+                
+                <p>Mức độ hoàn thiện thông tin khách hàng</p>
+                <div class="w3-grey">
+                    <div class="w3-container w3-center w3-padding w3-red" style="width:@phantramnull%">@phantramnull%</div>
+                </div>
+
+                <div class="w3-panel w3-white">
+                    <h3>Warning!</h3>
+                    <p>
+                        Sổ chưa mở
+                        Trang cá nhân của bạn thiếu thông tin, Vui lòng cập nhật: @foreach (var item in nhungthuconthieu)
+                        { <span class="w3-tag w3-small w3-deep-purple">@item.ToString()</span>}
+                    </p>
+                </div>
+            </div>
+            <div class="w3-container">
+                <h5>Loại Tiết Kiệm</h5>
+                <table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">
+                    @foreach (var item in listLoaiTK)
+                    {
+                        <tr>
+                            <td>@item.TenLoai</td>
+                            <td>lãi suất @item.LaiSuat%</td>
+                        </tr>
+                    }
+                </table><br>
+            </div>
+            
+        }
+            
+
+
+        <!-- End Left Column -->
+    </div>
+    <!--THIRD-->
+    <div class="w3-third">
+        <!--CHAT BOX-->
+        @if (Request.IsAuthenticated && banlaadmin == false)
+        {
+            <div class="w3-card-4">
+                <!-- DIRECT CHAT PRIMARY -->
+                <div class="card card-primary direct-chat direct-chat-primary demo">
+                    <div class="card-header w3-blue">
+                        <h3 class="card-title" id="demo">tư vấn viên</h3>
+                        <div class="card-tools">
+                            @*<span data-toggle="tooltip" title="3 New Messages" class="badge bg-danger ">3</span>*@
+                            <button type="button" class="btn btn-tool w3-deep-purple" data-widget="collapse">
+                                <i class="fa fa-minus"></i>
+                            </button>
+                            @*<button type="button" class="btn btn-tool w3-blue" data-toggle="tooltip" title="Contacts"
+                                    data-widget="chat-pane-toggle">
+                                <i class="fa fa-comments"></i>
+                            </button>*@
+                            <button type="button" class="btn btn-tool w3-pink" data-widget="remove">
+                                <i class="fa fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <!-- Conversations are loaded here -->
+                        <div class="direct-chat-messages" id="yourdiv">
+                            @foreach (var item in listchatboxes)
+                            {
+                                if (item.UserID_Gui == idnguoinhan && item.UserID_Nhan == idusername)
+                                {
+                                    <!-- LEFT  -->
+                                    <div class="direct-chat-msg">
+                                        <div class="direct-chat-info clearfix">
+                                            <span class="direct-chat-name float-left">Quản trị viên</span>
+                                            <span class="direct-chat-timestamp float-right">@item.ThoiGian</span>
+                                        </div>
+                                        <!-- /.direct-chat-info -->
+                                        <img class="direct-chat-img" src="~/Content/image/@db.AspNetUsers.Single(d=>d.Id.Equals(idnguoinhan)).Avatar" alt="Message User Image">
+                                        <!-- /.direct-chat-img -->
+                                        <div class="direct-chat-text">
+                                            @item.TinNhan
+                                        </div>
+                                        <!-- /.direct-chat-text -->
+                                    </div>
+                                    <!-- /.direct-chat-msg -->
+                                }
+                                if (item.UserID_Gui == idusername && item.UserID_Nhan == idnguoinhan)
+                                {
+                                    <!-- RIGHT-->
+                                    <div class="direct-chat-msg right">
+                                        <div class="direct-chat-info clearfix">
+                                            <span class="direct-chat-name float-right">@item.AspNetUser.HoTen</span>
+                                            <span class="direct-chat-timestamp float-left">@item.ThoiGian</span>
+                                        </div>
+                                        <!-- /.direct-chat-info -->
+                                        <img class="direct-chat-img" src="~/Content/image/@db.AspNetUsers.Single(d=>d.Id.Equals(idusername)).Avatar" alt="Message User Image">
+                                        <!-- /.direct-chat-img -->
+                                        <div class="direct-chat-text ">
+                                            @item.TinNhan
+                                        </div>
+                                        <!-- /.direct-chat-text -->
+                                    </div>
+                                    <!-- /.direct-chat-msg -->
+                                }
+
+
+                            }
+
+
+                        </div>
+                        <!--/.direct-chat-messages-->
+                    </div>
+                    @using (Html.BeginForm("chatadmin", "Home"))
+                    {
+                        @Html.AntiForgeryToken()
+                        <!-- /.card-body -->
+                        <div class="card-footer">
+                            <div class="input-group w3-animate-input">
+
+                                <!-- w3-hide -->
+                                <input type="text" name="ThoiGian" value="@time" class="form-control w3-hide">
+                                <input type="text" name="UserID_Gui" value="@idusername" class="form-control w3-hide">
+                                <input type="text" name="UserID_Nhan" value="@idnguoinhan" id="idnguoinhan" class="form-control w3-hide">
+                                <!--end w3-hide -->
+                                <textarea type="text" name="TinNhan" placeholder="Type Message ..." class="form-control" style="max-width:none" required></textarea>
+                                <span class="input-group-append" style="">
+                                    <button type="submit" class="w3-button w3-blue">Send</button>
+                                </span>
+
+                            </div>
+                        </div>
+                        <!-- /.card-footer-->
+                    }
+
+                </div>
+                <!--/.direct-chat -->
+            </div>
+            //if(phantramnull!=100)
+            //{
+            <a class="w3-button w3-deep-purple" href="@Url.Action("themthongtinthieu","Home",new {id=idusername })">Cập nhật</a>
+            //}
+            <!-- Alert Box -->
+            foreach (var i in db.PhieuRutTiens.Where(m => m.MaSTK.Equals(DBusername.Id)))
+            {
+                <div class="w3-container w3-display-container w3-round w3-white w3-border w3-theme-border w3-margin-bottom w3-hide-small">
+                    <br />
+                    <span onclick="this.parentElement.style.display='none'" class="w3-button w3-theme-l3 w3-display-topright">
+                        <i class="fa fa-remove"></i>
+                    </span>
+                    <p class="w3-text-pink"><strong>RÚT TIỀN THÀNH CÔNG !</strong></p>
+                    <p class="w3-white">@i.NgayRut</p><p> @listuser.Single(r => r.Id.Equals(i.MaSTK)).HoTen đã rút @i.SoTienRut VND ra khỏi tài khoản , tiền lãi :@i.TienLai VND</p>
+                </div>
+            }
+            foreach (var i in db.PhieuGuiTiens.Where(m => m.MaSTK.Equals(DBusername.Id)))
+            {
+                <div class="w3-container w3-display-container w3-round w3-light-green w3-border w3-theme-border w3-margin-bottom w3-hide-small ">
+                    <br />
+                    <span onclick="this.parentElement.style.display='none'" class="w3-button w3-theme-l3 w3-display-topright w3-text-white">
+                        <i class="fa fa-remove"></i>
+                    </span>
+                    <p class="w3-text-white"><strong>GỮI TIỀN THÀNH CÔNG !</strong></p>
+                    <p class="w3-text-white">@i.NgayGui</p><p class="w3-text-white"> @listuser.Single(t => t.Id.Equals(i.MaSTK)).HoTen được cộng @i.SoTienGui VND</p>
+                </div>
+            }
+
+
+        }
+    </div>
+
+    <div class="w3-twothird">
+
+
+    </div>
+}
+
+else if (banlaemployee)
+{
+    <a class=" w3-button w3-blue w3-xlarge" href="@Url.Action("Index","Employee")">EMPLOYEE'S PAGE >></a>
+    <div>
+        <div class="w3-panel">
+            <div class="w3-row-padding" style="margin:0 -16px">
+                <div class="w3-third w3-container">
+                    <h5>Quản lý sổ tiết kiệm</h5>
+                    <img src="~/Content/image/region.jpg" style="width:100%" alt="Google Regional Map">
+                </div>
+                <div class="w3-twothird">
+                    <h5>Danh sách thành viên nhóm G9-TK</h5>
+                    <ul class="w3-ul w3-card-4 w3-white ">
+                        <li class="w3-padding-16">
+                            <img src="~/Content/image/avatar3.png" class="w3-left w3-circle w3-margin-right" style="width:35px">
+                            <span class="w3-xlarge">Đào Minh Quân</span><br>
+                        </li>
+                        <li class="w3-padding-16">
+                            <img src="~/Content/image/avatar5.png" class="w3-left w3-circle w3-margin-right" style="width:35px">
+                            <span class="w3-xlarge">Bang Minh Huy</span><br>
+                        </li>
+                        <li class="w3-padding-16">
+                            <img src="~/Content/image/avatar6.png" class="w3-left w3-circle w3-margin-right" style="width:35px">
+                            <span class="w3-xlarge">Nguyễn Trí Thông</span><br>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <hr>
+
+
+        <br>
+        <div class="w3-container w3-dark-grey w3-padding-32">
+            <div class="w3-row">
+                <div class="w3-container w3-third">
+                    <h5 class="w3-bottombar w3-border-green">Ngôn ngữ</h5>
+                    <p>Java Script</p>
+                    <p>ASP.NET MVC 5</p>
+                    <p>C Sharp</p>
+                    <p>Html 5</p>
+                    <p>Css 3</p>
+                </div>
+                <div class="w3-container w3-third">
+                    <h5 class="w3-bottombar w3-border-red">Hệ thống</h5>
+                    <p>Visual studio 2017 Community</p>
+                    <p>SQL Server 2008 R2 SP2</p>
+                    <p>More</p>
+                </div>
+                <div class="w3-container w3-third">
+                    <h5 class="w3-bottombar w3-border-orange">Liên kết</h5>
+                    <p>facebook</p>
+                    <p>trello</p>
+                    <p>github</p>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- End page content -->
+    </div>
+}
+else if (banlaadmin)
+{
+    <a class=" w3-button w3-blue w3-xlarge" href="@Url.Action("Index","Admin")">ADMIN'S PAGE <i class="fa fa-angle-double-right"></i></a>
+    <a class=" w3-button w3-green w3-xlarge" href="@Url.Action("Index","Employee")">EMPLOYEE'S PAGE <i class="fa fa-angle-double-right"></i></a>
+    <div>
+        <div class="w3-panel">
+            <div class="w3-row-padding" style="margin:0 -16px">
+                <div class="w3-third w3-container">
+                    <h5>Quản lý sổ tiết kiệm</h5>
+                    <img src="~/Content/image/region.jpg" style="width:100%" alt="Google Regional Map">
+                </div>
+                <div class="w3-twothird">
+                    <h5>Danh sách thành viên nhóm G9-TK</h5>
+                    <ul class="w3-ul w3-card-4 w3-white ">
+                        <li class="w3-padding-16">
+                            <img src="~/Content/image/avatar3.png" class="w3-left w3-circle w3-margin-right" style="width:35px">
+                            <span class="w3-xlarge">Đào Minh Quân</span><br>
+                        </li>
+                        <li class="w3-padding-16">
+                            <img src="~/Content/image/avatar5.png" class="w3-left w3-circle w3-margin-right" style="width:35px">
+                            <span class="w3-xlarge">Bang Minh Huy</span><br>
+                        </li>
+                        <li class="w3-padding-16">
+                            <img src="~/Content/image/avatar6.png" class="w3-left w3-circle w3-margin-right" style="width:35px">
+                            <span class="w3-xlarge">Nguyễn Trí Thông</span><br>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <hr>
+
+
+        <br>
+        <div class="w3-container w3-dark-grey w3-padding-32">
+            <div class="w3-row">
+                <div class="w3-container w3-third">
+                    <h5 class="w3-bottombar w3-border-green">Ngôn ngữ</h5>
+                    <p>Java Script</p>
+                    <p>ASP.NET MVC 5</p>
+                    <p>C Sharp</p>
+                    <p>Html 5</p>
+                    <p>Css 3</p>
+                </div>
+                <div class="w3-container w3-third">
+                    <h5 class="w3-bottombar w3-border-red">Hệ thống</h5>
+                    <p>Visual studio 2017 Community</p>
+                    <p>SQL Server 2008 R2 SP2</p>
+                    <p>More</p>
+                </div>
+                <div class="w3-container w3-third">
+                    <h5 class="w3-bottombar w3-border-orange">Liên kết</h5>
+                    <p>facebook</p>
+                    <p>trello</p>
+                    <p>github</p>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- End page content -->
+    </div>
+}

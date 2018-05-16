@@ -1,0 +1,40 @@
+﻿@model QLSTK.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Register";
+}
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="login-logo">
+        <a href="../../index2.html"><b>Đăng ký</b> tài khoản</a>
+    </div>
+    <div class="w3-modal-content w3-card-4" style="max-width:600px">
+
+        <div class="w3-display-container">
+            <img src="~/Content/image/bannerregister.jpg" style="width:100%" alt="Avatar">
+        </div>
+
+        <div class="w3-container">
+            <div class="w3-section">
+                <label class="col-md-2"><b>Email</b></label>
+                @Html.TextBoxFor(m => m.Email, new { @class = "col-md-10 w3-input w3-border w3-margin-bottom" })
+                <label class="col-md-2"><b>Password</b></label>
+                @Html.PasswordFor(m => m.Password, new { @class = "col-md-10 w3-input w3-border w3-margin-bottom" })
+                <label class="col-md-2"><b>Confirm Password</b></label>
+                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "col-md-10 w3-input w3-border w3-margin-bottom" })
+                <button class="w3-button w3-block w3-blue w3-section w3-padding" type="submit">Đăng ý</button>
+            </div>
+        </div>
+
+        <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+            <a href="@Url.Action("Login","Account")" class="w3-button w3-purple w3-right">Đăng Nhập</a>
+        </div>
+
+
+    </div>
+
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,50 @@
+﻿@using Microsoft.AspNet.Identity
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="w3-text">xin chào @User.Identity.GetUserName()</h2>
+
+
+<div class="w3-row-padding w3-margin-bottom w3-third">
+
+
+    <div class="w3-xxxlarge w3-margin-bottom">
+        <a href="Admin/ManageUserRoles">
+            <div class="w3-container w3-green w3-padding-16 w3-hover-dark-gray">
+                <div class="w3-left"><i class="fa fa-share-alt w3-xxxlarge"></i></div>
+                <div class="w3-right">
+                    <h3>Vào</h3>
+                </div>
+                <div class="w3-clear"></div>
+                <h4>ManageUserRoles</h4>
+            </div>
+        </a>
+    </div>
+    <div class=" w3-xxxlarge w3-margin-bottom">
+        <a href="Admin/ManageRoles">
+            <div class="w3-container w3-light-green w3-text-white w3-padding-16 w3-hover-dark-gray">
+                <div class="w3-left"><i class="fa fa-users w3-xxxlarge"></i></div>
+                <div class="w3-right">
+                    <h3>Vào</h3>
+                </div>
+                <div class="w3-clear"></div>
+                <h4>ManageRoles</h4>
+            </div>
+        </a>
+    </div>
+    <div class="w3-xxxlarge w3-margin-bottom">
+        <a href="Home">
+            <div class="w3-container w3-lime w3-padding-16  w3-hover-dark-gray">
+                <div class="w3-left"><i class="material-icons">arrow_back</i></div>
+                <div class="w3-right">
+                    <h3></h3>
+                </div>
+                <div class="w3-clear"></div>
+                <h4>Quay về trang chính</h4>
+            </div>
+        </a>
+    </div>
+</div>

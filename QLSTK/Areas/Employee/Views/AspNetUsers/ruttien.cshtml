@@ -1,0 +1,92 @@
+﻿@model QLSTK.Models.PhieuRutTien
+@using QLSTK.Models
+@using System.Data.Entity
+@using Microsoft.AspNet.Identity
+@{
+    ViewBag.Title = "ruttien";
+    Layout = "~/Areas/Employee/Views/Shared/_Layout.cshtml";
+    bool banlaadmin = false;
+    if (User.Identity.GetUserName() == "admin@gmail.com")
+    {
+        banlaadmin = true;
+    }
+    Entities db = new Entities();
+    var userdangruttien = ViewData["username"];
+    var listuser = db.AspNetUsers.ToList();
+    var DBuserdangruttien = listuser.Single(m => m.UserName.Equals(userdangruttien));
+    var iduserdangruttien = DBuserdangruttien.Id;
+    int maxtienrut = int.Parse(DBuserdangruttien.SoDu.ToString());
+}
+<h2>ruttien</h2>
+@if (banlaadmin==true)
+{
+
+
+using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>PhieuRutTien</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group w3-hide">
+            @Html.LabelFor(model => model.MaSTK, "MaSTK", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input name="MaSTK" value="@iduserdangruttien" class="w3-hide"/>
+                @Html.ValidationMessageFor(model => model.MaSTK, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SoTienRut, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (DBuserdangruttien.MaLoaiTK== 2)
+                {
+                    <input class="form-control" name="SoTienRut" value="@int.Parse(DBuserdangruttien.SoDu.ToString())" disabled/>
+                    <input class="form-control w3-hide" name="SoTienRut" value="@int.Parse(DBuserdangruttien.SoDu.ToString())" />
+                    <p class="text-success">*Rút hết tất cả số dư</p>
+                }
+                else if (DBuserdangruttien.MaLoaiTK== 3)
+                {
+                    <input class="form-control w3-hide" name="SoTienRut" value="@int.Parse(DBuserdangruttien.SoDu.ToString())" disabled/>
+                    <input class="form-control w3-hide" name="SoTienRut" value="@int.Parse(DBuserdangruttien.SoDu.ToString())"/>
+                    <p class="text-success">*Rút hết tất cả số dư</p>
+                }
+                else
+                {
+                    <input class="form-control" name="SoTienRut" min=50000 max=@maxtienrut type="number" required/>
+                }
+                
+                @Html.ValidationMessageFor(model => model.SoTienRut, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group w3-hide">
+            @Html.LabelFor(model => model.NgayRut, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input class="form-control" value="@DateTime.Now" name="NgayRut" />
+                @Html.ValidationMessageFor(model => model.NgayRut, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group w3-hide">
+            @Html.LabelFor(model => model.TienLai, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input class="form-control" value=0 name="TienLai" />
+                @Html.ValidationMessageFor(model => model.TienLai, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Rút" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Quay lại", "Index")
+</div>
+}

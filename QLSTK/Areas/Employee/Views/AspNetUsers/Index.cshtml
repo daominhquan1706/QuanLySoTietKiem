@@ -1,0 +1,370 @@
+﻿@model IEnumerable<QLSTK.Models.AspNetUser>
+@using QLSTK.Models
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Employee/Views/Shared/_Layout.cshtml";
+    Entities db = new Entities();
+    var listloaitk = db.LoaiTietKiems.ToList();
+    var listtrangthai = db.LoaiTrangThais.ToList();
+}
+<a class="w3-button w3-deep-purple" href="@Url.Action("Index", "Employee")"><i class="material-icons w3-small">arrow_back</i>Trở về </a>
+<h2>Danh sách sổ tiết kiệm</h2>
+<div class="card-body">
+    <table id="example1" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Email)
+                </th>
+                @*<th>
+                        @Html.DisplayNameFor(model => model.EmailConfirmed)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PasswordHash)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.SecurityStamp)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PhoneNumber)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PhoneNumberConfirmed)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.TwoFactorEnabled)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.LockoutEndDateUtc)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.LockoutEnabled)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AccessFailedCount)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.UserName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Avatar)
+                    </th>*@
+                <th>
+                    @Html.DisplayNameFor(model => model.HoTen)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SoTienGuiBanDau)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.NgayMoSo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SoDu)
+                </th>
+                <th>
+                    Rút/Gữi
+                </th>
+                @*<th>
+                    @Html.DisplayNameFor(model => model.DiaChi)
+                </th>*@
+                <th>
+                    @Html.DisplayNameFor(model => model.LoaiTietKiem.TenLoai)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.LoaiTrangThai.TenTrangThai)
+                </th>
+                <th>
+                    Edit
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                if(item.HoTen != null && item.SoTienGuiBanDau != null && item.NgayMoSo != null && item.SoDu != null && item.MaLoaiTK != null && item.MaTrangThai !=null )
+                { 
+                <tr class="">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    @*<td>
+                            @Html.DisplayFor(modelItem => item.EmailConfirmed)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PasswordHash)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SecurityStamp)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PhoneNumber)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PhoneNumberConfirmed)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TwoFactorEnabled)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LockoutEndDateUtc)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LockoutEnabled)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AccessFailedCount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UserName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Avatar)
+                        </td>*@
+                    <td>
+                        @Html.DisplayFor(modelItem => item.HoTen)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SoTienGuiBanDau)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NgayMoSo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SoDu)
+                    </td>
+                    <td>
+                        @if (item.NgayMoSo != null && item.SoDu != null && item.SoDu >=50000)
+                        {
+                            int sothangcandecotherut = int.Parse(listloaitk.Single(z => z.MaLoaiTK.Equals(item.MaLoaiTK)).SoThang.ToString());
+                            int sothangdaqua = int.Parse(item.NgayMoSo.ToString().Split('/')[0].ToString()) - DateTime.Now.Month;
+                            int matrangthai = listtrangthai.Single(a => a.MaTrangThai.Equals(item.MaTrangThai)).MaTrangThai;
+                            if (sothangdaqua < 0) { sothangdaqua = sothangdaqua * (-1); }
+                            if (sothangcandecotherut <= sothangdaqua && matrangthai != 1 && item.SoDu >0)
+                            {
+                                <a class="w3-btn w3-half w3-pink w3-small" href="@Url.Action("ruttien", new { username = item.UserName })">Rút</a>
+                                <a class="w3-btn w3-half w3-blue w3-small" href="@Url.Action("guitien", new { username = item.UserName })">Gữi</a>
+                                @*@Html.ActionLink("Rút", "ruttien", new { username = item.UserName })
+                                    @Html.ActionLink("Gữi", "guitien", new { username = item.UserName })*@
+                            }
+                            else
+                            {
+                                    <a class="w3-btn  w3-half w3-pink w3-small w3-gray w3-disabled" disabled>Rút</a>
+                                    <a class="w3-btn  w3-half w3-blue w3-small w3-gray w3-disabled" disabled>Gữi</a>
+                            }
+                        }
+                        else
+                        {
+                                <a class="w3-btn  w3-half w3-pink w3-small w3-gray w3-disabled" disabled>Rút</a>
+                                <a class="w3-btn  w3-half w3-blue w3-small w3-gray w3-disabled" disabled>Gữi</a>
+                        }
+                    </td>
+                    @*<td>
+                        @Html.DisplayFor(modelItem => item.DiaChi)
+                    </td>*@
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LoaiTietKiem.TenLoai)
+                    </td>
+                    <td>
+                        @if (item.MaTrangThai==1)
+                        {
+                            <p class="w3-text-light-gray">@Html.DisplayFor(modelItem => item.LoaiTrangThai.TenTrangThai)</p>
+                        }
+                        @if(item.MaTrangThai == 2)
+                        {
+                            <p class="w3-text-blue"><b>@Html.DisplayFor(modelItem => item.LoaiTrangThai.TenTrangThai)</b></p>
+                        }
+
+                        
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+                    </td>
+                </tr>
+                }
+            }
+        </tbody>
+
+    </table>
+</div>
+
+<!--chưa hoàn thiện-->
+<h2>Chưa hoàn thiện thông tin</h2>
+<div class="card-body">
+    <table id="example1" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Email)
+                </th>
+                @*<th>
+                        @Html.DisplayNameFor(model => model.EmailConfirmed)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PasswordHash)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.SecurityStamp)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PhoneNumber)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PhoneNumberConfirmed)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.TwoFactorEnabled)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.LockoutEndDateUtc)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.LockoutEnabled)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AccessFailedCount)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.UserName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Avatar)
+                    </th>*@
+                <th>
+                    @Html.DisplayNameFor(model => model.HoTen)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SoTienGuiBanDau)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.NgayMoSo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SoDu)
+                </th>
+                <th>
+                    Rút/Gữi
+                </th>
+                @*<th>
+                        @Html.DisplayNameFor(model => model.DiaChi)
+                    </th>*@
+                <th>
+                    @Html.DisplayNameFor(model => model.LoaiTietKiem.TenLoai)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.LoaiTrangThai.TenTrangThai)
+                </th>
+                <th>
+                    Edit
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                if (item.HoTen != null && item.SoTienGuiBanDau != null && item.NgayMoSo != null && item.SoDu != null && item.MaLoaiTK != null && item.MaTrangThai != null)
+                {
+
+                }
+                else
+                {
+                    <tr class="">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+                        @*<td>
+                                @Html.DisplayFor(modelItem => item.EmailConfirmed)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PasswordHash)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.SecurityStamp)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PhoneNumber)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PhoneNumberConfirmed)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TwoFactorEnabled)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LockoutEndDateUtc)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LockoutEnabled)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.AccessFailedCount)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UserName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Avatar)
+                            </td>*@
+                        <td>
+                            @Html.DisplayFor(modelItem => item.HoTen)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SoTienGuiBanDau)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.NgayMoSo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SoDu)
+                        </td>
+                        <td>
+                            @if (item.NgayMoSo != null && item.SoDu != null)
+                            {
+                                int sothangcandecotherut = int.Parse(listloaitk.Single(z => z.MaLoaiTK.Equals(item.MaLoaiTK)).SoThang.ToString());
+                                int sothangdaqua = int.Parse(item.NgayMoSo.ToString().Split('/')[0].ToString()) - DateTime.Now.Month;
+                                int matrangthai = listtrangthai.Single(a => a.MaTrangThai.Equals(item.MaTrangThai)).MaTrangThai;
+                                if (sothangdaqua < 0) { sothangdaqua = sothangdaqua * (-1); }
+                                if (sothangcandecotherut <= sothangdaqua && matrangthai != 1 && item.SoDu > 0)
+                                {
+                                    <a class="w3-btn w3-half w3-pink w3-small" href="@Url.Action("ruttien", new { username = item.UserName })">Rút</a>
+                                    <a class="w3-btn w3-half w3-blue w3-small" href="@Url.Action("guitien", new { username = item.UserName })">Gữi</a>
+                                    @*@Html.ActionLink("Rút", "ruttien", new { username = item.UserName })
+                                        @Html.ActionLink("Gữi", "guitien", new { username = item.UserName })*@
+                                }
+                                else
+                                {
+                                    <a class="w3-btn  w3-half w3-pink w3-small w3-gray w3-disabled" disabled>Rút</a>
+                                    <a class="w3-btn  w3-half w3-blue w3-small w3-gray w3-disabled" disabled>Gữi</a>
+                                }
+                            }
+                            else
+                            {
+                                <a class="w3-btn  w3-half w3-pink w3-small w3-gray w3-disabled" disabled>Rút</a>
+                                <a class="w3-btn  w3-half w3-blue w3-small w3-gray w3-disabled" disabled>Gữi</a>
+                            }
+                        </td>
+                        @*<td>
+                                @Html.DisplayFor(modelItem => item.DiaChi)
+                            </td>*@
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LoaiTietKiem.TenLoai)
+                        </td>
+                        <td>
+                            @if (item.MaTrangThai==1)
+                            {
+                                <p class="w3-text-light-gray">@Html.DisplayFor(modelItem => item.LoaiTrangThai.TenTrangThai)</p>
+                            }
+                            @if(item.MaTrangThai == 2)
+                            {
+                                <p class="w3-text-blue"><b>@Html.DisplayFor(modelItem => item.LoaiTrangThai.TenTrangThai)</b></p>
+                            }
+                        </td>
+                        <td>
+                            @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+
+    </table>
+</div>

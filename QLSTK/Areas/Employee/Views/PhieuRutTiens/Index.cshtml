@@ -1,0 +1,55 @@
+﻿@model IEnumerable<QLSTK.Models.PhieuRutTien>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Employee/Views/Shared/_Layout.cshtml";
+}
+<a class="w3-button w3-deep-purple" href="@Url.Action("Index", "Employee")"><i class="material-icons w3-small">arrow_back</i>TRỞ VỀ </a>
+@Html.ActionLink("THÊM DỮ LIỆU", "Create", "PhieuRutTiens", new { @class = "w3-button w3-blue" })
+<hr />
+<h2>Trang quản lý phiếu rút tiền</h2>
+
+<p>
+
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.SoTienRut)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.NgayRut)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AspNetUser.Email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TienLai)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.SoTienRut)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NgayRut)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AspNetUser.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TienLai)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.MaPhieuRut }) |
+                @Html.ActionLink("Details", "Details", new { id = item.MaPhieuRut }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.MaPhieuRut })
+            </td>
+        </tr>
+    }
+
+</table>

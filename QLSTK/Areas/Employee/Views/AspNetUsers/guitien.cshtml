@@ -1,0 +1,63 @@
+﻿@model QLSTK.Models.PhieuGuiTien
+@using QLSTK.Models
+@using System.Data.Entity
+@using Microsoft.AspNet.Identity
+@{
+    ViewBag.Title = "guitien";
+    Layout = "~/Areas/Employee/Views/Shared/_Layout.cshtml";
+    bool banlaadmin = false;
+    if (User.Identity.GetUserName() == "admin@gmail.com")
+    {
+        banlaadmin = true;
+    }
+    Entities db = new Entities();
+    var userdangguitientien = ViewData["username"];
+    var listuser = db.AspNetUsers.ToList();
+    var DBuserdangguitien = listuser.Single(m => m.UserName.Equals(userdangguitientien));
+    var iduserdangguitien = DBuserdangguitien.Id;
+}
+<h2>guitien</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>PhieuGuiTien</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group w3-hide">
+            @Html.LabelFor(model => model.MaSTK, "MaSTK", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input name="MaSTK" value="@iduserdangguitien" class="w3-hide" />
+                @Html.ValidationMessageFor(model => model.MaSTK, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group w3-hide">
+            @Html.LabelFor(model => model.NgayGui, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input name="NgayGui" value="@DateTime.Now" class="w3-hide" />
+                @Html.ValidationMessageFor(model => model.NgayGui, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SoTienGui, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input class="form-control" name="SoTienGui" type="number" min="50000" max="10000000" required />
+                @Html.ValidationMessageFor(model => model.SoTienGui, "", new { @class = "text-danger" })
+                <p class="w3-text-teal">*min=50000VND , max 10000000</p>
+            </div>
+            
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="w3-button w3-deep-purple" />
+                <a href="@Url.Action("Index","AspNetUsers")" class="w3-button w3-blue">Trở vể</a>
+            </div>
+        </div>
+    </div>
+}
+

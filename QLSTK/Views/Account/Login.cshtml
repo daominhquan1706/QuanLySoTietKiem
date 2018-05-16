@@ -1,0 +1,47 @@
+﻿@using QLSTK.Models
+@model LoginViewModel
+@{
+    ViewBag.Title = "Log in";
+}
+<div class="login-logo">
+    <a href="../../index2.html"><b>Đăng nhập</b> trang web</a>
+</div>
+
+<div class="w3-modal-content w3-card-4" style="max-width:600px">
+
+    <div class="w3-display-container">
+        <img src="~/Content/image/bannerregister.jpg" style="width:100%" alt="Avatar">
+    </div>
+
+    @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="w3-container">
+            <div class="w3-section ">
+                <label class="col-md-2"><b>Tài Khoản</b></label>
+                @Html.TextBoxFor(m => m.Email, new { @class = "col-md-10 w3-input w3-border w3-margin-bottom" })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                <label class="col-md-2 "><b>Mật Khẩu</b></label>
+                @Html.PasswordFor(m => m.Password, new { @class = "col-md-10 w3-input w3-border w3-margin-bottom" })
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                <div class="col-md-offset-2 col-md-10">
+                    @Html.CheckBoxFor(m => m.RememberMe, new { @class = "w3-check" }) <label>Remember me</label>
+                </div>
+                <button class="w3-button w3-block w3-blue w3-section w3-padding" type="submit">Đăng Nhập</button>
+
+            </div>
+        </div>
+    }
+
+    <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+        <a href="@Url.Action("Register","Account")" class="w3-button w3-pink">Đăng ký</a>
+    </div>
+
+
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

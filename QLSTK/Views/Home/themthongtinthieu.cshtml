@@ -1,0 +1,27 @@
+﻿@using  QLSTK.Models
+@{
+    ViewBag.Title = "Cập nhập thông tin";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    Entities db = new Entities();
+    string id = ViewData["id"].ToString();
+    var DBusername = db.AspNetUsers.Single(y => y.Id.Equals(id));
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("themthongtinthieu", "Home"))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="w3-card-4 w3-padding w3-quarter">
+                    <input class="form-control w3-hide" name="id" value="@DBusername.Id" required />
+                    <label>Họ Tên</label><input class="form-control w3-margin-bottom" value="@DBusername.HoTen" name="hoten" required />
+
+                    <label>Địa Chỉ</label><input class="form-control w3-margin-bottom" value="@DBusername.DiaChi" name="diachi" required />
+
+                    <label>CMND</label><input class="form-control w3-margin-bottom" value="@DBusername.CMND" type="number" min="" max="999999999" name="cmnd" required />
+
+                    <button class="w3-button w3-blue" type="submit">Cập nhật</button>
+                    <a class="w3-button w3-deep-purple" href="@Url.Action("Index","Home")">Trở về</a>
+                </div>
+            }
