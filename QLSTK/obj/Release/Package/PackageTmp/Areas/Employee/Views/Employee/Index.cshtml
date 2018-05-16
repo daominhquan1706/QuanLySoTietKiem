@@ -1,0 +1,253 @@
+﻿@model QLSTK.Models.ApplicationUser
+@using QLSTK.Models
+@using System.Data.Entity
+@using Microsoft.AspNet.Identity
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Employee/Views/Shared/_Layout.cshtml";
+    Entities db = new Entities();
+    string time = DateTime.Now.ToString();
+
+    var username = "admin@gmail.com";
+    if (Request.IsAuthenticated)
+    {
+        username = @User.Identity.GetUserName(); // người đang đăng nhập hiện tại
+        username = "admin@gmail.com";
+
+    }
+    var DBusername = db.AspNetUsers.Single(d => d.Email.Equals(username));
+    var idusername = DBusername.Id;
+
+    var listchatboxes = db.ChatBoxes.ToList();
+    var listuser = db.AspNetUsers.ToList();
+}
+
+
+
+<div>
+    <a class="w3-button w3-deep-purple" href="Home"><i class="material-icons w3-small">arrow_back</i>TRỞ VỀ </a>
+</div>
+<hr />
+<div class="w3-row-padding w3-margin-bottom w3-third">
+    <div class="w3-card-4 card-default w3-light-gray" style="height:700px">
+        <div class="card-header w3-indigo" >
+            <h3 class="card-title"><i class="fa fa-ellipsis-v"></i> Công cụ quản lý</h3>
+        </div>
+        <div class="w3-xxxlarge w3-padding  ">
+            <a href="@Url.Action("Index","PhieuGuiTiens" )">
+                <div class="w3-container w3-blue w3-padding-16  w3-hover-dark-gray">
+                    <div class="w3-left"><i class="fa fa-eye w3-xxxlarge"></i></div>
+                    <div class="w3-right">
+                        <h3>@db.PhieuGuiTiens.Count()</h3>
+                    </div>
+                    <div class="w3-clear"></div>
+                    <h4>Phiếu gữi tiền</h4>
+                </div>
+            </a>
+        </div>
+        <div class=" w3-xxxlarge w3-padding">
+            <a href="@Url.Action("Index","PhieuRutTiens" )">
+                <div class="w3-container w3-light-blue w3-padding-16 w3-hover-dark-gray">
+                    <div class="w3-left"><i class="fa fa-share-alt w3-xxxlarge"></i></div>
+                    <div class="w3-right">
+                        <h3>@db.PhieuRutTiens.Count()</h3>
+                    </div>
+                    <div class="w3-clear"></div>
+                    <h4>Phiếu rút tiền</h4>
+                </div>
+            </a>
+        </div>
+        <div class="w3-xxxlarge w3-padding">
+            <a href="@Url.Action("Index","AspNetUsers" )">
+                <div class="w3-container w3-cyan w3-text-white w3-padding-16 w3-hover-dark-gray">
+                    <div class="w3-left"><i class="fa fa-users w3-xxxlarge"></i></div>
+                    <div class="w3-right">
+                        <h3>@db.AspNetUsers.Count()</h3>
+                    </div>
+                    <div class="w3-clear"></div>
+                    <h4>Danh Sách Khách Hàng</h4>
+                </div>
+            </a>
+        </div>
+        <div class="w3-padding w3-xxxlarge w3-margin-bottom">
+            <a href="Home">
+                <div class="w3-container w3-teal w3-padding-16 w3-hover-dark-gray">
+                    <div class="w3-left"><i class="material-icons">arrow_back</i></div>
+                    <div class="w3-right">
+                        <h3></h3>
+                    </div>
+                    <div class="w3-clear"></div>
+                    <h4>Quay về trang chính</h4>
+                </div>
+            </a>
+        </div>
+
+    </div>
+</div>
+    <div class="w3-third">
+
+        <div class="w3-card-4 card-default w3-deep-purple ">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fa fa-users"></i>Liên hệ</h3>
+
+                @*<div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-widget="collapse">
+                            <i class="fa fa-plus"></i>
+                        </button>
+                    </div>*@
+
+                <!-- /.card-tools -->
+            </div>
+            <div class="w3-padding w3-light-gray">
+                <div class="w3-card-2 w3-white ">
+                    <input type="text" id="myInput" onkeyup="search()" placeholder="Tìm kiếm" title="Nhập thông tin muốn tìm" class="w3-input" />
+                </div>
+            </div>
+            <!--DANH SACH HIỆN Ở ĐÂY-->
+
+            <div class="card-body w3-light-gray direct-chat-messages" style="height:600px">
+
+                <table id="myTable" class="contacts-list w3-table">
+
+
+                    @foreach (var item in listuser)
+                    {
+                        bool full = false;
+                        List<string> nhungthuconthieu = new List<string>();
+                        if (1 == 1)
+                        {
+                            if (item.HoTen == null) { nhungthuconthieu.Add("Họ tên"); }
+                            if (item.MaLoaiTK == null) { nhungthuconthieu.Add("Loại TK"); }
+                            if (item.MaTrangThai == null) { nhungthuconthieu.Add("Trạng thái"); }
+                            if (item.SoDu == null) { nhungthuconthieu.Add("Số dư"); }
+                            if (item.SoTienGuiBanDau == null) { nhungthuconthieu.Add("STGBD"); }
+                            if (item.CMND == null) { nhungthuconthieu.Add("CMND"); }
+                            if (item.DiaChi == null) { nhungthuconthieu.Add("Địa Chỉ"); }
+                        }
+                        if (item.UserName != null && item.SoTienGuiBanDau != null && item.SoDu != null && item.MaTrangThai != null && item.MaLoaiTK != null && item.HoTen != null && item.CMND != null && item.DiaChi != null) { full = true; }
+                        if (item.UserName != null && item.UserName != "admin@gmail.com")
+                        {
+                            <tr>
+                                <td>
+                                    <div class="w3-card-2 w3-padding w3-white">
+                                        <a class="" href=@Url.Action("chonkhach", "ChatBoxes", new { nguoinhan = item.UserName })>
+                                            <img class="contacts-list-img" src="~/Content/image/@item.Avatar">
+                                            <div class="contacts-list-info" style="max-height:45px">
+                                                <span class="contacts-list-name w3-text-black">
+                                                    @item.UserName
+                                                </span>
+                                                <span class="contacts-list-msg">
+                                                    @if (full == true)
+                                                    {
+                                                        <small class="contacts-list-date float-right w3-text-light-blue"><span class="glyphicon glyphicon-ok"></span></small>
+                                                        <span class="w3-text-light-blue">Đủ thông tin !</span>
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <small class="contacts-list-date float-right w3-text-deep-purple"><span class="glyphicon glyphicon-remove"></span></small>
+                                                        <span class="w3-text-deep-purple">bổ sung: </span>
+                                                        foreach (var a in nhungthuconthieu)
+                                                        { <span class="w3-tag w3-small w3-deep-purple">@a.ToString()</span>}
+                                                }
+
+                                                </span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <div class="w3-third">
+        <!-- DIRECT CHAT PRIMARY -->
+        <div class="w3-card-4 card-default  w3-purple">
+            <!--chat header-->
+            <div class="card-header">
+                <h3 class="card-title"><i class="fa fa-comments"></i>Tin Nhắn</h3>
+                @*<div class="card-tools">
+                        <span data-toggle="tooltip" title="3 New Messages" class="badge bg-primary">3</span>
+                        <button type="button" class="btn btn-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-toggle="tooltip" title="Contacts"
+                                data-widget="chat-pane-toggle">
+                            <i class="fa fa-comments"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-widget="remove">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>*@
+            </div>
+            <!--chat body-->
+            <div class="card-body w3-light-gray">
+                <!-- Conversations are loaded here -->
+                <div class="direct-chat-messages" style="height:617px" id="yourdiv">
+                    @foreach (var item in listchatboxes)
+                    {
+                        if (item.UserID_Nhan == idusername && db.AspNetUsers.Single(d => d.Id.Equals(item.UserID_Gui)).UserName != "admin@gmail.com")
+                        {
+                            <!-- LEFT  -->
+                            <div class="direct-chat-msg">
+                                <div class="direct-chat-info clearfix">
+                                    <span class="direct-chat-name float-left">@item.AspNetUser.Email</span>
+                                    <span class="direct-chat-timestamp float-right">@item.ThoiGian</span>
+                                </div>
+                                <img class="direct-chat-img" src="~/Content/image/@db.AspNetUsers.Single(d => d.Id.Equals(item.UserID_Gui)).Avatar" alt="Message User Image">
+                                <div class="direct-chat-text">
+                                    @item.TinNhan
+                                </div>
+                            </div>
+                        }
+                        if (item.UserID_Gui == idusername)
+                        {
+                            <!-- RIGHT-->
+                            <div class="direct-chat-msg right">
+                                <div class="direct-chat-info clearfix">
+                                    <span class="direct-chat-name float-right">@item.AspNetUser.HoTen</span>
+                                    <span class="direct-chat-timestamp float-left">trả lời @item.AspNetUser1.Email</span>
+                                </div>
+                                <img class="direct-chat-img" src="~/Content/image/admin.png" alt="Message User Image">
+                                <div class="direct-chat-text">
+                                    @item.TinNhan
+                                </div>
+                            </div>
+                        }
+
+                    }
+                </div>
+            </div>
+        </div>
+        <!--/.direct-chat -->
+    </div>
+    <!-- /.col -->
+
+    <script>
+        function updateDiv() {
+            $("#yourdiv").load(window.location.href + " #yourdiv");
+        }
+        function search() {
+            var input, filter, table, tr, td, i;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("myTable");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>

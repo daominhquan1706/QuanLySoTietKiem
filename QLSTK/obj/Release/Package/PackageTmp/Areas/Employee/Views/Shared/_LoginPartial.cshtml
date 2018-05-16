@@ -1,0 +1,36 @@
+﻿@using Microsoft.AspNet.Identity
+@using QLSTK.Models
+@{
+    List<string> danhsachrole = new List<String>();
+    if (Request.IsAuthenticated)
+    {
+        Entities db = new Entities();
+        var username = User.Identity.GetUserName();
+        ApplicationDbContext context = new ApplicationDbContext();
+        ApplicationUser model = context.Users.Find(db.AspNetUsers.Single(s => s.Email.Equals(username)).Id);
+        if (model.Roles.Count != 0)
+        {
+            foreach (var aaa in model.Roles)
+            {
+                danhsachrole.Add(aaa.RoleId);
+            }
+        }
+    }
+}
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account",new { Area = ""}, FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+        <a href="@Url.Action("Index", "Manage",new { Area = ""})" class="w3-bar-item w3-button w3-mobile">Hello @User.Identity.GetUserName() !</a>
+        <a href="javascript:document.getElementById('logoutForm').submit()" class="w3-bar-item w3-button w3-mobile">Log off</a>
+        @*@Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })*@
+
+    }
+}
+else
+{
+    <a id="registerLink" href="@Url.Action( "Register", "Account")" class="w3-bar-item w3-button w3-mobile w3-right">Register</a>
+    <a id="loginLink" href="@Url.Action( "Login", "Account")" class="w3-bar-item w3-button w3-mobile w3-right">Log in</a>
+    @*@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })
+        @Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })*@
+}

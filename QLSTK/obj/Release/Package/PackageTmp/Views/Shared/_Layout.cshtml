@@ -1,0 +1,100 @@
+﻿@using QLSTK.Models
+@using System.Data.Entity
+@using Microsoft.AspNet.Identity
+@{
+
+    Entities db = new Entities();
+    string time = DateTime.Now.ToString();
+    bool banlaadmin = false;
+    var username= "khach@gmail.com";
+    var nguoinhan = "admin@gmail.com";  // người được chọn để nhắn tin với người đăng nhập hiện tại
+    if (Request.IsAuthenticated)
+    {
+        username = @User.Identity.GetUserName(); // người đang đăng nhập hiện tại
+    }
+    if (@User.Identity.GetUserName() == "admin@gmail.com")
+    {
+        username = "admin@gmail.com";
+        banlaadmin = true;
+    }
+    var DBusername = db.AspNetUsers.Single(d => d.Email.Equals(username));
+    var idusername = DBusername.Id;
+    var DBnguoinhan = db.AspNetUsers.Single(d => d.Email.Equals(nguoinhan));
+    var idnguoinhan = DBnguoinhan.Id;
+    var listchatboxes = db.ChatBoxes.ToList();
+    var listuser = db.AspNetUsers.ToList();
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/Content/adminlte.min.css">
+
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+
+   <!---->
+    <div class="w3-bar w3-light-grey w3-border w3-top">
+        <a href="@Url.Action("Index", "Home")" class="w3-bar-item w3-button w3-mobile">Home</a>
+        
+        
+        @*<input type="text" class="w3-bar-item w3-input w3-white w3-mobile" placeholder="Search..">
+        <button class="w3-bar-item w3-button w3-green w3-mobile">Go</button>*@
+        @Html.Partial("_LoginPartial")
+    </div>
+    
+
+
+    <!-- Page Container -->
+    <div class="w3-content w3-margin-top" style="max-width:1400px;">
+        <!-- The Grid -->
+        <div class="w3-row-padding w3-animate-opacity">
+            @RenderBody()
+                
+        </div>
+    </div>
+    <script>
+        var objDiv = document.getElementById("yourdiv");
+        objDiv.scrollTop = objDiv.scrollHeight;
+    </script>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+    <!-- AdminLTE App -->
+    <script src="~/Content/adminlte.min.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="~/Content/demo.js"></script>
+    <!-- jQuery -->
+    <script src="~/Content/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="~/Content/bootstrap.bundle.min.js"></script>
+    <script>
+        // Get the modal
+        var modal = document.getElementById('id01');
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+    </script>
+
+
+</body>
+</html>

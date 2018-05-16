@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using CrystalDecisions.CrystalReports.Engine;
 using QLSTK.Models;
 
 namespace QLSTK.Areas.Employee.Controllers
@@ -139,6 +141,27 @@ namespace QLSTK.Areas.Employee.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+        public ActionResult BaoCaoPhieuRutTien(int thang,int nam)
+        {
+            List<PhieuRutTien> ListPhieuRutTien = db.PhieuRutTiens.Where(t=>t.NgayRut.Month.Equals(thang) && t.NgayRut.Year.Equals(nam)).ToList();
+            ReportDocument rd = new ReportDocument();
+            rd.Load(Path.Combine(Server.MapPath("~/Reports"), "BaoCaoPhieuRutTien.rpt"));
+            rd.SetDataSource(ListPhieuRutTien);
+            Response.Buffer = false;
+            Response.ClearContent();
+            Response.ClearHeaders();
+            try
+            {
+                Stream stream = rd.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
+                stream.Seek(0, SeekOrigin.Begin);
+                return File(stream, "application/pdf", "ListPhieuRutTien.pdf");
+            }
+            catch
+            {
+                throw;
+            }
+
         }
     }
 }

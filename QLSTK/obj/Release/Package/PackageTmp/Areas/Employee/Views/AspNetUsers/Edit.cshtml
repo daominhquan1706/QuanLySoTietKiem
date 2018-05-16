@@ -1,0 +1,222 @@
+﻿@model QLSTK.Models.AspNetUser
+@using QLSTK.Models
+@using System.Data.Entity
+@using Microsoft.AspNet.Identity
+@{
+    ViewBag.Title = "Cập nhật thông tin";
+    Layout = "~/Areas/Employee/Views/Shared/_Layout.cshtml";
+    Entities db = new Entities();
+    string IDuser = ViewData["id"].ToString();
+    var DBuser = db.AspNetUsers.Single(t => t.Id.Equals(IDuser));
+}
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="w3-container">
+            <div class="w3-container w3-white w3-padding-16 w3-half w3-card-4">
+                <div class="form-horizontal">
+
+                    <div class="w3-container w3-white">
+                        <h2><i class="fa fa-address-card-o"></i> Cập nhật thông tin</h2>
+                    </div>
+                    <hr />
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.Id)
+
+                    <div class="form-group w3-hide">
+                        @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label " })
+                        <div class="">
+                            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group w3-hide">
+                        @Html.LabelFor(model => model.EmailConfirmed, htmlAttributes: new { @class = "control-label " })
+                        <div class="">
+                            <div class="checkbox">
+                                @Html.EditorFor(model => model.EmailConfirmed)
+                                @Html.ValidationMessageFor(model => model.EmailConfirmed, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group w3-hide">
+                        @Html.LabelFor(model => model.PasswordHash, htmlAttributes: new { @class = "control-label " })
+                        <div class="">
+                            @Html.EditorFor(model => model.PasswordHash, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.PasswordHash, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group w3-hide">
+                        @Html.LabelFor(model => model.SecurityStamp, htmlAttributes: new { @class = "control-label " })
+                        <div class="">
+                            @Html.EditorFor(model => model.SecurityStamp, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.SecurityStamp, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group w3-hide">
+                        @Html.LabelFor(model => model.PhoneNumber, htmlAttributes: new { @class = "control-label " })
+                        <div class="">
+                            @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group w3-hide">
+                        @Html.LabelFor(model => model.PhoneNumberConfirmed, htmlAttributes: new { @class = "control-label " })
+                        <div class="">
+                            <div class="checkbox">
+                                @Html.EditorFor(model => model.PhoneNumberConfirmed)
+                                @Html.ValidationMessageFor(model => model.PhoneNumberConfirmed, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group w3-hide">
+                        @Html.LabelFor(model => model.TwoFactorEnabled, htmlAttributes: new { @class = "control-label " })
+                        <div class="">
+                            <div class="checkbox">
+                                @Html.EditorFor(model => model.TwoFactorEnabled)
+                                @Html.ValidationMessageFor(model => model.TwoFactorEnabled, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group w3-hide">
+                        @Html.LabelFor(model => model.LockoutEndDateUtc, htmlAttributes: new { @class = "control-label " })
+                        <div class="">
+                            @Html.EditorFor(model => model.LockoutEndDateUtc, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.LockoutEndDateUtc, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group w3-hide">
+                        @Html.LabelFor(model => model.LockoutEnabled, htmlAttributes: new { @class = "control-label " })
+                        <div class="">
+                            <div class="checkbox">
+                                @Html.EditorFor(model => model.LockoutEnabled)
+                                @Html.ValidationMessageFor(model => model.LockoutEnabled, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group w3-hide">
+                        @Html.LabelFor(model => model.AccessFailedCount, htmlAttributes: new { @class = "control-label " })
+                        <div class="">
+                            @Html.EditorFor(model => model.AccessFailedCount, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.AccessFailedCount, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+
+                    <!--Một nửa -->
+
+                    <div class="w3-row-padding">
+                        <div class="form-group w3-half w3-hide">
+                            @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "w3-input w3-border" } })
+                                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group w3-half w3-hide">
+                            @Html.LabelFor(model => model.Avatar, htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                @Html.EditorFor(model => model.Avatar, new { htmlAttributes = new { @class = "w3-input w3-border" } })
+                                @Html.ValidationMessageFor(model => model.Avatar, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group w3-half">
+                            @Html.LabelFor(model => model.HoTen, htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                <input class="form-control" name="HoTen" value="@DBuser.HoTen" required/>
+                                @Html.ValidationMessageFor(model => model.HoTen, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+
+                        <div class="form-group w3-half">
+                            @Html.LabelFor(model => model.SoTienGuiBanDau, htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                <input class="form-control" name="SoTienGuiBanDau" value="@DBuser.SoTienGuiBanDau" type="number" required/>
+                                @Html.ValidationMessageFor(model => model.SoTienGuiBanDau, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group w3-half">
+                            @Html.LabelFor(model => model.NgayMoSo, htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                <input class="form-control" name="NgayMoSo" value="@DBuser.NgayMoSo" type="datetime" required />
+                                @Html.ValidationMessageFor(model => model.NgayMoSo, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group w3-half">
+                            @Html.LabelFor(model => model.SoDu, htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                <input class="form-control" name="SoDu" value="@DBuser.SoDu" type="number" min="50000" required/>
+                                @Html.ValidationMessageFor(model => model.SoDu, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group w3-half">
+                            @Html.LabelFor(model => model.DiaChi, htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                <input class="form-control" name="DiaChi" value="@DBuser.DiaChi" required/>
+                                @Html.ValidationMessageFor(model => model.DiaChi, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group w3-half">
+                            @Html.LabelFor(model => model.CMND, htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                <input class="form-control w3-margin-bottom" value="@DBuser.CMND" type="number" min="" max="999999999" name="CMND" required />
+                                @Html.ValidationMessageFor(model => model.CMND, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group w3-half">
+                            @Html.LabelFor(model => model.MaTrangThai, "MaTrangThai", htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                @Html.DropDownList("MaTrangThai", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.MaTrangThai, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group w3-half">
+                            @Html.LabelFor(model => model.MaLoaiTK, "MaLoaiTK", htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                @Html.DropDownList("MaLoaiTK", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.MaLoaiTK, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button class="w3-button w3-green" type="submit">Save</button>
+                        <a class="w3-button w3-gray" href="@Url.Action("Index", "AspNetUsers")">Trở về</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+}
+else
+{
+    <p>Bạn không có quyền vào trang này</p>
+    <div>
+        <a class="w3-button w3-gray" href="@Url.Action("Index", "AspNetUsers")">Trở về</a>
+    </div>
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

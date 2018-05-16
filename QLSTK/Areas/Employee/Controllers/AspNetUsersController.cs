@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using CrystalDecisions.CrystalReports.Engine;
 using QLSTK.Models;
 
 namespace QLSTK.Areas.Employee.Controllers
@@ -183,7 +185,7 @@ namespace QLSTK.Areas.Employee.Controllers
                 phieuRutTien.TienLai = int.Parse(tienlai.ToString());
 
             
-                    userRutTien.SoDu = userRutTien.SoDu - phieuRutTien.SoTienRut;
+                    //userRutTien.SoDu = userRutTien.SoDu - phieuRutTien.SoTienRut;
                     db.Entry(userRutTien).State = EntityState.Modified;
                     db.SaveChanges();
 
@@ -211,8 +213,8 @@ namespace QLSTK.Areas.Employee.Controllers
             AspNetUser userGuiTien = db.AspNetUsers.Single(d => d.Id.Equals(phieuGuiTien.MaSTK));
             if (ModelState.IsValid)
             {
-                userGuiTien.SoDu = userGuiTien.SoDu + phieuGuiTien.SoTienGui;
-                db.Entry(userGuiTien).State = EntityState.Modified;
+                //userGuiTien.SoDu = userGuiTien.SoDu + phieuGuiTien.SoTienGui;
+                //db.Entry(userGuiTien).State = EntityState.Modified;
                 db.SaveChanges();
 
                 db.PhieuGuiTiens.Add(phieuGuiTien);
@@ -223,5 +225,7 @@ namespace QLSTK.Areas.Employee.Controllers
             ViewBag.MaSTK = new SelectList(db.AspNetUsers, "Id", "Email", phieuGuiTien.MaSTK);
             return View(phieuGuiTien);
         }
+        
+
     }
 }

@@ -1,0 +1,331 @@
+﻿
+@{
+    ViewBag.Title = "Tư vấn khách hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+}
+@model QLSTK.Models.AspNetUser
+@using QLSTK.Models
+@using System.Data.Entity
+@using Microsoft.AspNet.Identity
+@{
+
+    Entities db = new Entities();
+    string time = DateTime.Now.ToString();
+    var nguoinhan = ViewData["nguoinhan"].ToString();
+    var username = "admin@gmail.com";
+    var listchatboxes = db.ChatBoxes.ToList();
+    var DBusername = db.AspNetUsers.Single(d => d.Email.Equals(username));
+    var idusername = DBusername.Id;
+    var DBnguoinhan = db.AspNetUsers.Single(d => d.Email.Equals(nguoinhan));
+    var idnguoinhan = DBnguoinhan.Id;
+    bool banlaadmin = false;
+    if (User.Identity.GetUserName() == "admin@gmail.com")
+    {
+        banlaadmin = true;
+    }
+    var DATAnguoinhan = db.AspNetUsers.Single(g => g.Email.Equals(nguoinhan));
+
+    bool full = false;
+    List<string> nhungthuconthieu = new List<string>();
+    if (1 == 1)
+    {
+        if (DBnguoinhan.HoTen == null) { nhungthuconthieu.Add("Họ tên"); }
+        if (DBnguoinhan.MaLoaiTK == null) { nhungthuconthieu.Add("Loại TK"); }
+        if (DBnguoinhan.NgayMoSo == null) { nhungthuconthieu.Add("Ngày mở sổ"); }
+        if (DBnguoinhan.SoDu == null) { nhungthuconthieu.Add("Số dư"); }
+        if (DBnguoinhan.SoTienGuiBanDau == null) { nhungthuconthieu.Add("STGBD"); }
+        if (DBnguoinhan.CMND == null) { nhungthuconthieu.Add("CMND"); }
+    }
+}
+<a class="w3-button w3-pink  w3-large" href="@Url.Action("chat", "ChatBoxes")">Trở về</a>
+<h2>ĐANG TƯ VẤN @nguoinhan</h2>
+<div class=" w3-half">
+    <!-- DIRECT CHAT PRIMARY -->
+    <div class="w3-card-4 card-primary direct-chat direct-chat-primary demo">
+        <!--chat header-->
+        <div class="card-header w3-black ">
+            <h3 class="card-title" id="demo">Tư vấn khách hàng</h3>
+            <div class="card-tools">
+                <span data-toggle="tooltip" title="3 New Messages" class="badge bg-primary">3</span>
+                <button type="button" class="btn btn-tool" data-widget="collapse">
+                    <i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-tool" data-toggle="tooltip" title="Contacts"
+                        data-widget="chat-pane-toggle">
+                    <i class="fa fa-comments"></i>
+                </button>
+                <button type="button" class="btn btn-tool" data-widget="remove">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <!--chat body-->
+        <div class="card-body">
+            <!-- Conversations are loaded here -->
+            <div class="direct-chat-messages" style="height:600px" id="yourdiv">
+                @foreach (var item in listchatboxes)
+                {
+                    if (item.UserID_Gui == idnguoinhan && item.UserID_Nhan == idusername && db.AspNetUsers.Single(d => d.Id.Equals(item.UserID_Gui)).UserName != "admin@gmail.com")
+                    {
+                        <!-- LEFT  -->
+                        <div class="direct-chat-msg">
+                            <div class="direct-chat-info clearfix">
+                                <span class="direct-chat-name float-left">@item.AspNetUser.Email</span>
+                                <span class="direct-chat-timestamp float-right">@item.ThoiGian</span>
+                            </div>
+                            <img class="direct-chat-img" src="~/Content/image/@db.AspNetUsers.Single(d => d.Id.Equals(item.UserID_Gui)).Avatar" alt="Message User Image">
+                            <div class="direct-chat-text">
+                                @item.TinNhan
+                            </div>
+                        </div>
+                    }
+                    if (item.UserID_Gui == idusername && item.UserID_Nhan == idnguoinhan)
+                    {
+                        <!-- RIGHT-->
+                        <div class="direct-chat-msg right">
+                            <div class="direct-chat-info clearfix">
+                                <span class="direct-chat-name float-right">@item.AspNetUser.HoTen</span>
+                                <span class="direct-chat-timestamp float-left">trả lời @item.AspNetUser1.Email</span>
+                            </div>
+                            <img class="direct-chat-img" src="~/Content/image/admin.png" alt="Message User Image">
+                            <div class="direct-chat-text ">
+                                @item.TinNhan
+                            </div>
+                        </div>
+                    }
+
+                }
+            </div>
+        </div>
+        @using (Html.BeginForm("tuvan", "ChatBoxes"))
+        {
+            @Html.AntiForgeryToken()
+            <!-- /.card-body -->
+            <div class="card-footer">
+                <div class="input-group">
+                    <!-- w3-hide -->
+                    <input type="text" name="ThoiGian" value="@time" class="form-control w3-hide">
+                    <input type="text" name="UserID_Gui" value="@idusername" class="form-control w3-hide">
+                    <input type="text" name="UserID_Nhan" value="@idnguoinhan" id="idnguoinhan" class="form-control w3-hide">
+                    <!--end w3-hide -->
+                    <textarea type="text" name="TinNhan" placeholder="Type Message ..." class="form-control" style="max-width:none" required></textarea>
+                    <span class="input-group-append" style="">
+                        <button type="submit" class="w3-button w3-blue" id="Send" >Send</button>
+                    </span>
+                </div>
+            </div>
+            <!-- /.card-footer-->
+        }
+    </div>
+</div>
+@if (Request.IsAuthenticated && banlaadmin == true)
+{
+    using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="w3-container w3-half">
+            <div class="w3-container w3-white w3-padding-16 w3-card-4">
+                <div class="form-horizontal">
+
+                    <div class="w3-container w3-white">
+                        <h2><i class="fa fa-address-card-o"></i> Cập nhật thông tin</h2>
+                    </div>
+                    <hr />
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.Id)
+                    <div>
+                        <div class="form-group w3-hide">
+                            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group w3-hide">
+                            @Html.LabelFor(model => model.EmailConfirmed, htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                <div class="checkbox">
+                                    @Html.EditorFor(model => model.EmailConfirmed)
+                                    @Html.ValidationMessageFor(model => model.EmailConfirmed, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group w3-hide">
+                            @Html.LabelFor(model => model.PasswordHash, htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                @Html.EditorFor(model => model.PasswordHash, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.PasswordHash, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group w3-hide">
+                            @Html.LabelFor(model => model.SecurityStamp, htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                @Html.EditorFor(model => model.SecurityStamp, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.SecurityStamp, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group w3-hide">
+                            @Html.LabelFor(model => model.PhoneNumber, htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group w3-hide">
+                            @Html.LabelFor(model => model.PhoneNumberConfirmed, htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                <div class="checkbox">
+                                    @Html.EditorFor(model => model.PhoneNumberConfirmed)
+                                    @Html.ValidationMessageFor(model => model.PhoneNumberConfirmed, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group w3-hide">
+                            @Html.LabelFor(model => model.TwoFactorEnabled, htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                <div class="checkbox">
+                                    @Html.EditorFor(model => model.TwoFactorEnabled)
+                                    @Html.ValidationMessageFor(model => model.TwoFactorEnabled, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group w3-hide">
+                            @Html.LabelFor(model => model.LockoutEndDateUtc, htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                @Html.EditorFor(model => model.LockoutEndDateUtc, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.LockoutEndDateUtc, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group w3-hide">
+                            @Html.LabelFor(model => model.LockoutEnabled, htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                <div class="checkbox">
+                                    @Html.EditorFor(model => model.LockoutEnabled)
+                                    @Html.ValidationMessageFor(model => model.LockoutEnabled, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group w3-hide">
+                            @Html.LabelFor(model => model.AccessFailedCount, htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                @Html.EditorFor(model => model.AccessFailedCount, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.AccessFailedCount, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <!--Một nửa -->
+                    <div class="w3-row-padding">
+                        <div class="form-group w3-half">
+                            @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "w3-input w3-border" } })
+                                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group w3-half">
+                            @Html.LabelFor(model => model.Avatar, htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                @Html.EditorFor(model => model.Avatar, new { htmlAttributes = new { @class = "w3-input w3-border" } })
+                                @Html.ValidationMessageFor(model => model.Avatar, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group w3-half">
+                            @Html.LabelFor(model => model.HoTen, htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                @Html.EditorFor(model => model.HoTen, new { htmlAttributes = new { @class = "w3-input w3-border" } })
+                                @Html.ValidationMessageFor(model => model.HoTen, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group w3-half">
+                            @Html.LabelFor(model => model.SoTienGuiBanDau, htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                <input name="SoTienGuiBanDau" class="w3-input w3-border" type="number" value="@DBnguoinhan.SoTienGuiBanDau" min="1000000" max=@int.MaxValue  required/>
+                                @Html.ValidationMessageFor(model => model.SoTienGuiBanDau, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        
+
+                        <div class="form-group w3-half w3-hide">
+                            @Html.LabelFor(model => model.SoDu, htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                @Html.EditorFor(model => model.SoDu, new { htmlAttributes = new { @class = "w3-input w3-border" } })
+                                @Html.ValidationMessageFor(model => model.SoDu, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group w3-half">
+                            @Html.LabelFor(model => model.DiaChi, htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                @Html.EditorFor(model => model.DiaChi, new { htmlAttributes = new { @class = "w3-input w3-border" } })
+                                @Html.ValidationMessageFor(model => model.DiaChi, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group w3-half">
+                            @Html.LabelFor(model => model.CMND, htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                @Html.EditorFor(model => model.CMND, new { htmlAttributes = new { @class = "w3-input w3-border" } })
+                                @Html.ValidationMessageFor(model => model.CMND, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group w3-half w3-hide">
+                            @Html.LabelFor(model => model.MaTrangThai, "MaTrangThai", htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                @Html.DropDownList("MaTrangThai", null, htmlAttributes: new { @class = "w3-input w3-border" })
+                                @Html.ValidationMessageFor(model => model.MaTrangThai, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group w3-half">
+                            @Html.LabelFor(model => model.MaLoaiTK, "MaLoaiTK", htmlAttributes: new { @class = "control-label " })
+                            <div class="">
+                                @Html.DropDownList("MaLoaiTK", null, htmlAttributes: new { @class = "w3-input w3-border" })
+                                @Html.ValidationMessageFor(model => model.MaLoaiTK, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        @if(db.AspNetUsers.Single(f=>f.Email.Equals(nguoinhan)).NgayMoSo != null)
+                        {
+                            <div class="form-group w3-half">
+                                @Html.LabelFor(model => model.NgayMoSo, htmlAttributes: new { @class = "control-label " })
+                                <div class="">
+                                    @Html.DisplayFor(model => model.NgayMoSo, new { htmlAttributes = new { @class = "w3-input w3-border w3-disabled" } })
+                                    @Html.ValidationMessageFor(model => model.NgayMoSo, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-group w3-half">
+                                @Html.LabelFor(model => model.NgayMoSo, htmlAttributes: new { @class = "control-label  " })
+                                <div class="">
+                                    <input  @*type="date"*@ class="w3-input w3-border col-md-11" value="@DateTime.Now.Date" disabled />
+                                    <input name="NgayMoSo" @*type="date"*@ class="w3-input w3-border col-md-11 w3-hide" value="@DateTime.Now.Date" disabled />
+                                    @Html.ValidationMessageFor(model => model.NgayMoSo, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <div>
+                        <button class="w3-button w3-large w3-green" type="submit">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+}
