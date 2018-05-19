@@ -7,7 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using QLSTK.Models;
-
+using Microsoft.AspNet.Identity;
 namespace QLSTK.Controllers
 {
     [Authorize]
@@ -16,7 +16,11 @@ namespace QLSTK.Controllers
         private Entities db = new Entities();
         public ActionResult Index()
         {
-            return View();
+            if (Request.IsAuthenticated)
+            {
+                return View();
+            }
+                return RedirectToAction("Login","Account");
         }
 
         public ActionResult About()

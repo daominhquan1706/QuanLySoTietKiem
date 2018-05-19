@@ -3,26 +3,7 @@
 @using Microsoft.AspNet.Identity
 @{
 
-    Entities db = new Entities();
-    string time = DateTime.Now.ToString();
-    bool banlaadmin = false;
-    var username= "khach@gmail.com";
-    var nguoinhan = "admin@gmail.com";  // người được chọn để nhắn tin với người đăng nhập hiện tại
-    if (Request.IsAuthenticated)
-    {
-        username = @User.Identity.GetUserName(); // người đang đăng nhập hiện tại
-    }
-    if (@User.Identity.GetUserName() == "admin@gmail.com")
-    {
-        username = "admin@gmail.com";
-        banlaadmin = true;
-    }
-    var DBusername = db.AspNetUsers.Single(d => d.Email.Equals(username));
-    var idusername = DBusername.Id;
-    var DBnguoinhan = db.AspNetUsers.Single(d => d.Email.Equals(nguoinhan));
-    var idnguoinhan = DBnguoinhan.Id;
-    var listchatboxes = db.ChatBoxes.ToList();
-    var listuser = db.AspNetUsers.ToList();
+    
 }
 <!DOCTYPE html>
 <html>

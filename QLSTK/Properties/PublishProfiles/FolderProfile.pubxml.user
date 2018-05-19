@@ -6,11 +6,17 @@ by editing this MSBuild file. In order to learn more about this please visit htt
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
-    <_PublishTargetUrl>C:\Users\lg\Desktop\đóng gói</_PublishTargetUrl>
+    <_PublishTargetUrl>C:\Users\lg\Desktop\PublishQLSTK</_PublishTargetUrl>
   </PropertyGroup>
   <ItemGroup>
     <File Include="ApplicationInsights.config">
       <publishTime>04/26/2018 21:28:27</publishTime>
+    </File>
+    <File Include="App_Data/aspnet-QLSTK-20180426092830.mdf">
+      <publishTime>05/20/2018 00:52:39</publishTime>
+    </File>
+    <File Include="App_Data/aspnet-QLSTK-20180426092830_log.ldf">
+      <publishTime>05/20/2018 00:52:39</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Admin/Index.cshtml">
       <publishTime>05/11/2018 22:45:59</publishTime>
@@ -58,7 +64,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/14/2018 16:28:05</publishTime>
     </File>
     <File Include="Areas/Employee/Views/AspNetUsers/Index.cshtml">
-      <publishTime>05/16/2018 12:09:01</publishTime>
+      <publishTime>05/18/2018 11:40:10</publishTime>
     </File>
     <File Include="Areas/Employee/Views/AspNetUsers/ruttien.cshtml">
       <publishTime>05/16/2018 00:53:10</publishTime>
@@ -241,10 +247,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>11/27/2012 13:00:52</publishTime>
     </File>
     <File Include="bin/QLSTK.dll">
-      <publishTime>05/16/2018 15:12:01</publishTime>
+      <publishTime>05/20/2018 00:52:37</publishTime>
     </File>
     <File Include="bin/QLSTK.pdb">
-      <publishTime>05/16/2018 15:12:01</publishTime>
+      <publishTime>05/20/2018 00:52:37</publishTime>
     </File>
     <File Include="bin/roslyn/csc.exe">
       <publishTime>09/21/2017 23:42:00</publishTime>
@@ -691,7 +697,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/26/2018 21:28:23</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
-      <publishTime>05/11/2018 22:43:41</publishTime>
+      <publishTime>05/20/2018 00:27:28</publishTime>
     </File>
     <File Include="Views/Shared/_LoginPartial.cshtml">
       <publishTime>05/11/2018 22:22:20</publishTime>
@@ -703,7 +709,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/26/2018 21:28:09</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>05/16/2018 15:12:02</publishTime>
+      <publishTime>05/20/2018 00:52:39</publishTime>
     </File>
   </ItemGroup>
 </Project>

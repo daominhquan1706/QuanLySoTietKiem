@@ -18,39 +18,6 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Email)
                 </th>
-                @*<th>
-                        @Html.DisplayNameFor(model => model.EmailConfirmed)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.PasswordHash)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.SecurityStamp)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.PhoneNumber)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.PhoneNumberConfirmed)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.TwoFactorEnabled)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.LockoutEndDateUtc)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.LockoutEnabled)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.AccessFailedCount)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.UserName)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Avatar)
-                    </th>*@
                 <th>
                     @Html.DisplayNameFor(model => model.HoTen)
                 </th>
@@ -66,9 +33,6 @@
                 <th>
                     Rút/Gữi
                 </th>
-                @*<th>
-                        @Html.DisplayNameFor(model => model.DiaChi)
-                    </th>*@
                 <th>
                     @Html.DisplayNameFor(model => model.LoaiTietKiem.TenLoai)
                 </th>
@@ -89,39 +53,6 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.Email)
                         </td>
-                        @*<td>
-                                @Html.DisplayFor(modelItem => item.EmailConfirmed)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.PasswordHash)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.SecurityStamp)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.PhoneNumber)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.PhoneNumberConfirmed)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.TwoFactorEnabled)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.LockoutEndDateUtc)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.LockoutEnabled)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.AccessFailedCount)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.UserName)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Avatar)
-                            </td>*@
                         <td>
                             @Html.DisplayFor(modelItem => item.HoTen)
                         </td>
@@ -370,3 +301,30 @@
 
     </table>
 </div>
+<script>
+        var objDiv = document.getElementById("yourdiv");
+        objDiv.scrollTop = objDiv.scrollHeight;
+    </script>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+    <!-- AdminLTE App -->
+    <script src="~/Content/adminlte.min.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="~/Content/demo.js"></script>
+    <!-- jQuery -->
+    <script src="~/Content/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="~/Content/bootstrap.bundle.min.js"></script>
+    <script>
+        // Get the modal
+        var modal = document.getElementById('id01');
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+    </script>
